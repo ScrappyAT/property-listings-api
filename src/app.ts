@@ -4,6 +4,7 @@ import agentRouter from './modules/agents/agent.router';
 import imageRouter from './modules/images/image.router';
 import inquiryRouter from './modules/inquiries/inquiry.router';
 import { errorHandler } from './middleware/errorHandler';
+import { apiRateLimiter } from './middleware/rateLimiter';
 
 const app = express();
 
@@ -12,6 +13,9 @@ app.use(express.json());
 app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'ok' });
 });
+
+// Apply rate limiting to all /api/v1 routes
+app.use('/api/v1', apiRateLimiter);
 
 app.use('/api/v1/properties', propertyRouter);
 app.use('/api/v1/agents', agentRouter);
