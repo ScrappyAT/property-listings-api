@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 export const ALLOWED_INQUIRY_SORT_FIELDS = ['createdAt', 'updatedAt'] as const;
 export const ALLOWED_SORT_ORDERS = ['asc', 'desc'] as const;
 
@@ -34,3 +36,33 @@ export interface PaginatedInquiriesResult {
     };
   };
 }
+
+export const createInquirySchema = z
+  .object({
+    propertyId: z
+      .string()
+      .uuid({ message: 'Invalid propertyId. Must be a valid UUID.' }),
+    name: z
+      .string()
+      .trim()
+      .min(1, { message: 'Name cannot be empty.' })
+      .max(255, { message: 'Name cannot exceed 255 characters.' }),
+    email: z
+      .string()
+      .trim()
+      .email({ message: 'Invalid email format.' })
+      .max(255, { message: 'Email cannot exceed 255 characters.' }),
+    phone: z
+      .string()
+      .trim()
+      .min(1, { message: 'Phone cannot be an empty string.' })
+      .max(50, { message: 'Phone cannot exceed 50 characters.' })
+      .optional(),
+    message: z
+      .string()
+      .trim()
+      .min(1, { message: 'Message cannot be empty.' }),
+  })
+  .strict();
+
+export type CreateInquiryDto = z.infer<typeof createInquirySchema>;

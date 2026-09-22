@@ -5,6 +5,7 @@ import {
   InquiryFilterQuery,
   InquirySortField,
   SortOrder,
+  createInquirySchema,
 } from './inquiry.types';
 import * as inquiryService from './inquiry.service';
 
@@ -115,6 +116,33 @@ export const getInquiryById = async (
     }
 
     res.status(200).json({
+      success: true,
+      data: inquiry,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createInquiry = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const result = createInquirySchema.safeParse(req.body);
+
+    if (!result.success) {
+      const details = result.error.issues.map((issue) => ({
+        field: issue.path.join('.') || 'body',
+        message: issue.message,
+      }));
+      throw new AppError(422, 'VALIDATION_ERROR', 'Request body validation failed.', details);
+    }
+
+    const inquiry = await inquiryService.createInquiry(result.data);
+
+    res.status(201).json({
       success: true,
       data: inquiry,
     });

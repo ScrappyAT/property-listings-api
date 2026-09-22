@@ -1,9 +1,11 @@
 import { pool } from '../../db';
+import { AppError } from '../../utils/errors';
 import {
   InquiryFilterQuery,
   PaginatedInquiriesResult,
   InquiryDto,
   InquirySortField,
+  CreateInquiryDto,
 } from './inquiry.types';
 
 const SORT_COLUMN_MAP: Record<InquirySortField, string> = {
@@ -83,4 +85,33 @@ export const getInquiryById = async (id: string): Promise<InquiryDto | null> => 
   }
 
   return mapInquiryRow(result.rows[0]);
+};
+
+export const createInquiry = async (data: CreateInquiryDto): Promise<InquiryDto> => {
+  // 1. Explicitly check that the referenced property exists before insertion
+  const propertyCheckSql = `SELECT id FROM properties WHERE id = $1`;
+  const propertyCheckRes = await pool.query(propertyCheckSql, [data.propertyId]);
+
+  if (propertyCheckRes.rows.length === 0) {
+    throw new AppError(404, 'NOT_FOUND', 'Property not found.');
+  }
+
+  // 2. Insert inquiry using parameterized query and RETURNING clause
+  const insertSql = `
+    INSERT INTO inquiries (property_id, name, email, phone, message)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING id, property_id, name, email, phone, message, created_at, updated_at
+  `;
+
+  const phoneValue = data.phone || null;
+
+  const insertRes = await pool.query(insertSql, [
+    data.propertyId,
+    data.name,
+    data.email,
+    phoneValue,
+    data.message,
+  ]);
+
+  return mapInquiryRow(insertRes.rows[0]);
 };

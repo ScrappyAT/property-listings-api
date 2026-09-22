@@ -7,13 +7,30 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ) => {
-  if (err instanceof AppError) {
-    return res.status(err.statusCode).json({
+  // Handle invalid JSON syntax in request body
+  if (err instanceof SyntaxError && 'status' in err && (err as any).status === 400 && 'body' in err) {
+    return res.status(400).json({
       success: false,
       error: {
-        code: err.code,
-        message: err.message,
+        code: 'INVALID_JSON',
+        message: 'Invalid JSON payload in request body.',
       },
+    });
+  }
+
+  if (err instanceof AppError) {
+    const errorPayload: Record<string, any> = {
+      code: err.code,
+      message: err.message,
+    };
+
+    if (err.details !== undefined) {
+      errorPayload.details = err.details;
+    }
+
+    return res.status(err.statusCode).json({
+      success: false,
+      error: errorPayload,
     });
   }
 
