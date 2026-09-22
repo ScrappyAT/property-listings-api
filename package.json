@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -20,6 +21,7 @@
     "pg": "^8.23.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.6.0",
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.2",
     "@types/pg": "^8.23.1",
