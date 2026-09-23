@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Property Listings — Demo Consumer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>Property Listings</h1>
+      <p>Demo consumer for the Live Property Listings API</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="toolbar" aria-label="Filters">
+      <form id="filter-form">
+        <div class="field">
+          <label for="city-filter">City</label>
+          <select id="city-filter" name="city">
+            <option value="">All cities</option>
+            <option value="Abuja">Abuja</option>
+            <option value="Enugu">Enugu</option>
+            <option value="Ibadan">Ibadan</option>
+            <option value="Kano">Kano</option>
+            <option value="Lagos">Lagos</option>
+            <option value="Port Harcourt">Port Harcourt</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="listing-type-filter">Listing type</label>
+          <select id="listing-type-filter" name="listingType">
+            <option value="">All</option>
+            <option value="sale">For Sale</option>
+            <option value="rent">For Rent</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn--primary">Apply</button>
+        <button type="button" id="reset-filters" class="btn">Clear filters</button>
+      </form>
+    </section>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+
+    <section id="grid" class="grid" aria-label="Properties"></section>
+
+    <nav class="pagination" aria-label="Pagination">
+      <button id="prev-page" class="btn" type="button">Previous</button>
+      <span id="page-info" class="pagination__info"></span>
+      <button id="next-page" class="btn" type="button">Next</button>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        Consumes the deployed API at
+        <code>https://property-listings-api.vercel.app/api/v1/properties</code>
+      </p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
