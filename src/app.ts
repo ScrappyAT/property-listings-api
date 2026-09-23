@@ -7,8 +7,13 @@ import inquiryRouter from './modules/inquiries/inquiry.router';
 import { errorHandler } from './middleware/errorHandler';
 import { apiRateLimiter } from './middleware/rateLimiter';
 import { AppError } from './utils/errors';
+import { config } from './config';
 
 const app = express();
+
+if (config.nodeEnv === 'production') {
+  app.set('trust proxy', 1);
+}
 
 app.use(cors());
 app.use(express.json());
